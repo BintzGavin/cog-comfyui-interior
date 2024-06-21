@@ -32,8 +32,21 @@ class Predictor(BasePredictor):
                 shutil.rmtree(directory)
             os.makedirs(directory)
 
-    def handle_input_file(self, input_file: Path):
-        file_extension = os.path.splitext(input_file)[1].lower()
+     def handle_input_file(self, input_file: Path):
+        # Check if the URL contains the format specification
+        with open(input_file, 'rb') as f:
+            content = f.read()
+            if b'format:jpg' in content:
+                file_extension = '.jpg'
+            elif b'format:jpeg' in content:
+                file_extension = '.jpeg'
+            elif b'format:png' in content:
+                file_extension = '.png'
+            elif b'format:webp' in content:
+                file_extension = '.webp'
+            else:
+                file_extension = os.path.splitext(input_file)[1].lower()
+
         if file_extension in [".jpg", ".jpeg", ".png", ".webp"]:
             filename = f"input{file_extension}"
             shutil.copy(input_file, os.path.join(INPUT_DIR, filename))
